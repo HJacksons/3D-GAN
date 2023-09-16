@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\jacks\PycharmProjects\3D-GAN\train.py", line 33, in <module>
+    train_loader, _ = dataset.get_dataloaders(batch_size=batch_size)
+  File "C:\Users\jacks\PycharmProjects\3D-GAN\dataset.py", line 32, in get_dataloaders
+    train_dataset = VoxelDataset(train_voxel, train_labels)
+  File "C:\Users\jacks\PycharmProjects\3D-GAN\dataset.py", line 9, in __init__
+    self.data = torch.tensor(data, dtype=torch.float32)
+KeyboardInterrupt

@@ -6,7 +6,9 @@ import dataset
 from networks import Generator, Discriminator
 #from torchsummary import summary
 import matplotlib.pyplot as plt
+import wandb
 
+wandb.init(project="3dgan", entity="jacksonherberts")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -86,6 +88,7 @@ def train():
         # Print loss and accuracy for monitoring
         tqdm_batch.set_description(f"Epoch [{epoch+1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}, D Accuracy: {accuracy.item():.4f}")
         print(f"Epoch [{epoch+1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}")
+        wandb.log({'epoch': epoch + 1, 'loss': d_loss.item(), 'accuracy': accuracy.item()})
 
         if epoch % 100 == 0:
             torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")

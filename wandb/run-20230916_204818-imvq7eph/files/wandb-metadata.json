@@ -1,0 +1,50 @@
+{
+    "os": "Windows-10-10.0.22621-SP0",
+    "python": "3.9.12",
+    "heartbeatAt": "2023-09-16T18:48:19.709153",
+    "startedAt": "2023-09-16T18:48:18.812702",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "C:\\Users\\jacks\\PycharmProjects\\3D-GAN\\train.py",
+    "codePath": "train.py",
+    "git": {
+        "remote": "https://github.com/HJacksons/3D-GAN.git",
+        "commit": "2dd48d4155302c8a1b110065d8d9726fdf84eec4"
+    },
+    "email": "jacksonherberts@gmail.com",
+    "root": "C:/Users/jacks/PycharmProjects/3D-GAN",
+    "host": "Jackson",
+    "username": "jacks",
+    "executable": "C:\\Users\\jacks\\anaconda3\\python.exe",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 1803.0,
+        "min": 0.0,
+        "max": 2304.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1803.0,
+            "min": 0.0,
+            "max": 2304.0
+        }
+    ],
+    "disk": {
+        "total": 952.7548789978027,
+        "used": 407.34840393066406
+    },
+    "gpu": "NVIDIA GeForce MX250",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce MX250",
+            "memory_total": 2147483648
+        }
+    ],
+    "memory": {
+        "total": 15.839252471923828
+    }
+}
