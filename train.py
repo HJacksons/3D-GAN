@@ -127,7 +127,7 @@ def generate_samples(number_samples):
         fake_data = (fake_data[0][0] > 0.5).detach().cpu().numpy()
         ax = plt.figure().add_subplot(projection='3d')
         ax.voxels(fake_data)
-        plt.show()
+        wandb.log({'generated samples': wandb.Image(ax)})
 
-train()
-#generate_samples(4)
+#train()
+generate_samples(4)
