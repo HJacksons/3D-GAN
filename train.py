@@ -88,9 +88,22 @@ def train():
         # Print loss and accuracy for monitoring
         tqdm_batch.set_description(f"Epoch [{epoch+1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}, D Accuracy: {accuracy.item():.4f}")
         print(f"Epoch [{epoch+1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}")
-        wandb.log({'epoch': epoch + 1, 'loss': d_loss.item(), 'accuracy': accuracy.item()})
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.plot(D_loss[:epoch + 1], label="D Loss")
+        ax.plot(G_loss[:epoch + 1], label="G Loss")
+        ax.set_ylabel("Loss")
+        ax.legend()
 
-        if epoch % 100 == 0:
+        # Log the metrics and the combined loss plot to wandb
+        wandb.log({
+            'epoch': epoch + 1,
+            'loss D': d_loss.item(),
+            'loss G': g_loss.item(),
+            'accuracy': accuracy.item(),
+            'loss plot': wandb.Image(fig)
+        })
+
+    if epoch % 100 == 0:
             torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")
             torch.save(discriminator.state_dict(), f"discriminator_ckpt_{epoch}")
 
@@ -101,7 +114,7 @@ def train():
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.legend()
-    plt.show()
+    wandb.log({'loss plot': wandb.Image(plt)})
 
 
 def generate_samples(number_samples):
