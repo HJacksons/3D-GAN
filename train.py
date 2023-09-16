@@ -8,6 +8,8 @@ from networks import Generator, Discriminator
 import matplotlib.pyplot as plt
 import wandb
 import io
+from PIL import Image
+
 
 wandb.init(project="3dgan", entity="jacksonherberts")
 
@@ -132,8 +134,9 @@ def generate_samples(number_samples):
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         buf.seek(0)
+        img = Image.open(buf)
 
-        wandb.log({'generated samples': wandb.Image(buf)})
+        wandb.log({'generated samples': wandb.Image(img)})
         buf.close()
         plt.close()
 
