@@ -141,4 +141,4 @@ def generate_samples(number_samples):
         plt.close()
 
 #train()
-generate_samples(4)
+generate_samples(10)
