@@ -23,7 +23,7 @@ discriminator = Discriminator().to(device)
 learning_rate_G = 0.0025
 learning_rate_D = 1e-5
 batch_size = 100
-epochs = 1000
+epochs = 100
 loss = nn.BCELoss()
 
 # "We use ADAM for optimization, with β = 0.5"
