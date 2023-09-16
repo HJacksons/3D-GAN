@@ -3,15 +3,17 @@ import torch.nn as nn
 import torch.optim as optim
 import dataset
 from networks import Generator, Discriminator  # Import your Generator and Discriminator
-from torchsummary import summary
+#from torchsummary import summary
 import matplotlib.pyplot as plt
+import wandb
 
+wandb.init(project="3dgan", entity="jacksonherberts")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load the pre-trained discriminator
 discriminator = Discriminator().to(device)
-discriminator.load_state_dict(torch.load("discriminator_ckpt_1000"))  # Update the path to your pre-trained discriminator checkpoint
+discriminator.load_state_dict(torch.load("models/discriminator_ckpt_1000"))  # Update the path to your pre-trained discriminator checkpoint
 
 # Define a feature extractor that extracts features from layers 2, 3, and 4 and applies max pooling
 class FeatureExtractor(nn.Module):
@@ -105,14 +107,15 @@ def train_classifier(classifier, train_loader, num_epochs):
         train_accuracy_history.append(train_accuracy)
 
         print(f"Epoch [{epoch+1}/{num_epochs}] - Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
+        wandb.log({"train_loss": train_loss, "train_accuracy": train_accuracy})
 
     return train_loss_history, train_accuracy_history
 
 # You can adjust the number of epochs as needed
-num_epochs_classifier = 2
+num_epochs_classifier = 32
 
 # Replace train_loader with your actual data loader
-train_loader, _ = dataset.get_dataloaders(batch_size=2)
+train_loader, _ = dataset.get_dataloaders(batch_size=100)
 train_loss_history, train_accuracy_history = train_classifier(classifier, train_loader, num_epochs_classifier)
 
 # Plot training loss and accuracy history
@@ -129,4 +132,4 @@ plt.title("Training Accuracy")
 plt.xlabel("Epoch")
 plt.ylabel("Accuracy")
 
-plt.show()
+wandb.log({"train_loss_history": plt, "train_accuracy_history": plt})
