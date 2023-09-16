@@ -112,7 +112,7 @@ def train_classifier(classifier, train_loader, num_epochs):
     return train_loss_history, train_accuracy_history
 
 # You can adjust the number of epochs as needed
-num_epochs_classifier = 32
+num_epochs_classifier = 100
 
 # Replace train_loader with your actual data loader
 train_loader, _ = dataset.get_dataloaders(batch_size=100)
