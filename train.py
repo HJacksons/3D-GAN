@@ -102,6 +102,7 @@ def train():
             'accuracy': accuracy.item(),
             'loss plot': wandb.Image(fig)
         })
+        plt.close(fig)
 
     if epoch % 100 == 0:
             torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")
@@ -115,6 +116,7 @@ def train():
     plt.ylabel("Loss")
     plt.legend()
     wandb.log({'loss plot': wandb.Image(plt)})
+
 
 
 def generate_samples(number_samples):
