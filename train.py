@@ -7,6 +7,7 @@ from networks import Generator, Discriminator
 #from torchsummary import summary
 import matplotlib.pyplot as plt
 import wandb
+import io
 
 wandb.init(project="3dgan", entity="jacksonherberts")
 
@@ -127,7 +128,14 @@ def generate_samples(number_samples):
         fake_data = (fake_data[0][0] > 0.5).detach().cpu().numpy()
         ax = plt.figure().add_subplot(projection='3d')
         ax.voxels(fake_data)
-        wandb.log({'generated samples': wandb.Image(ax)})
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+
+        wandb.log({'generated samples': wandb.Image(buf)})
+        buf.close()
+        plt.close()
 
 #train()
 generate_samples(4)
