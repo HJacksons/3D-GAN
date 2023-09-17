@@ -11,6 +11,8 @@ import io
 from PIL import Image
 
 
+wandb.login(key="796a636ca8878cd6c1494d1282f73496c43e6b31")
+
 wandb.init(project="3dgan", entity="jacksonherberts")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
