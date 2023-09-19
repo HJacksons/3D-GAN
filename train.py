@@ -142,7 +142,7 @@ def train():
 
 
 def generate_samples(number_samples):
-    generator.load_state_dict(torch.load(f"generator_ckpt_20"))
+    generator.load_state_dict(torch.load(f"generator_ckpt_60"))
     for i in range(number_samples):
         z = torch.rand(1, 200, 1, 1, 1).to(device)  # Sample random noise
         fake_data = generator(z)
