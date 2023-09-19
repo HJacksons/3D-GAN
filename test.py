@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import dataset
 from networks import Generator, Discriminator  # Import your Generator and Discriminator
-#from torchsummary import summary
+# from torchsummary import summary
 import matplotlib.pyplot as plt
 import wandb
 
@@ -15,7 +15,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load the pre-trained discriminator
 discriminator = Discriminator().to(device)
-discriminator.load_state_dict(torch.load("models/discriminator_ckpt_1000"))  # Update the path to your pre-trained discriminator checkpoint
+discriminator.load_state_dict(
+    torch.load("models/discriminator_ckpt_1000"))  # Update the path to your pre-trained discriminator checkpoint
+
 
 # Define a feature extractor that extracts features from layers 2, 3, and 4 and applies max pooling
 class FeatureExtractor(nn.Module):
@@ -35,12 +37,12 @@ class FeatureExtractor(nn.Module):
         out2 = self.layer2(out1)
         out3 = self.layer3(out2)
         out4 = self.layer4(out3)
-        
+
         # Apply max pooling separately to layers 2, 3, and 4
         pooled2 = self.maxpool2(out2)
         pooled3 = self.maxpool3(out3)
         pooled4 = self.maxpool4(out4)
-        
+
         # Concatenate the pooled results
         concatenated_features = torch.cat((pooled2, pooled3, pooled4), dim=1)
         # print(concatenated_features.shape)
@@ -61,8 +63,9 @@ class Classifier(nn.Module):
         out = self.classifier(features)
         return out
 
+
 feature_extractor = FeatureExtractor(discriminator).to(device)
-num_classes = 10  
+num_classes = 10
 classifier = Classifier(num_classes).to(device)
 
 # Print the total number of parameters of the classifier
@@ -73,6 +76,7 @@ print(f"Total number of parameters in the classifier: {total_params_classifier}"
 learning_rate_classifier = 0.001
 optimizer_classifier = optim.Adam(classifier.parameters(), lr=learning_rate_classifier)
 criterion = nn.CrossEntropyLoss()
+
 
 # Training loop for the classifier (using your data loader)
 def train_classifier(classifier, train_loader, num_epochs):
@@ -86,7 +90,8 @@ def train_classifier(classifier, train_loader, num_epochs):
         total_samples = 0
 
         for batch in train_loader:
-            inputs, labels = batch['voxel'].unsqueeze(1).to(device), batch['label'].to(device)  # Adjust according to your dataset
+            inputs, labels = batch['voxel'].unsqueeze(1).to(device), batch['label'].to(
+                device)  # Adjust according to your dataset
             optimizer_classifier.zero_grad()
 
             # Forward input through the modified feature extractor
@@ -108,10 +113,11 @@ def train_classifier(classifier, train_loader, num_epochs):
         train_loss_history.append(train_loss)
         train_accuracy_history.append(train_accuracy)
 
-        print(f"Epoch [{epoch+1}/{num_epochs}] - Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
+        print(f"Epoch [{epoch + 1}/{num_epochs}] - Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
         wandb.log({"train_loss": train_loss, "train_accuracy": train_accuracy})
 
     return train_loss_history, train_accuracy_history
+
 
 # You can adjust the number of epochs as needed
 num_epochs_classifier = 100

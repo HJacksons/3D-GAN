@@ -4,12 +4,11 @@ import torch.optim as optim
 from tqdm import tqdm
 import dataset
 from networks import Generator, Discriminator
-#from torchsummary import summary
+# from torchsummary import summary
 import matplotlib.pyplot as plt
 import wandb
 import io
 from PIL import Image
-
 
 wandb.login(key="796a636ca8878cd6c1494d1282f73496c43e6b31")
 
@@ -37,11 +36,12 @@ optimizer_D = optim.Adam(discriminator.parameters(), lr=learning_rate_D, betas=(
 
 train_loader, _ = dataset.get_dataloaders(batch_size=batch_size)
 
+
 # Training loop
 def train():
     D_loss = []
     G_loss = []
-    for epoch in range(1, epochs+1):
+    for epoch in range(1, epochs + 1):
         tqdm_batch = tqdm(train_loader, total=len(train_loader), leave=False, dynamic_ncols=True)
         for _, batch in enumerate(tqdm_batch):
             real_data = batch['voxel']  # Batch of real 3D voxel samples
@@ -91,8 +91,9 @@ def train():
         G_loss.append(g_loss.item())
 
         # Print loss and accuracy for monitoring
-        tqdm_batch.set_description(f"Epoch [{epoch+1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}, D Accuracy: {accuracy.item():.4f}")
-        print(f"Epoch [{epoch+1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}")
+        tqdm_batch.set_description(
+            f"Epoch [{epoch + 1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}, D Accuracy: {accuracy.item():.4f}")
+        print(f"Epoch [{epoch + 1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}")
         fig, ax = plt.subplots(figsize=(10, 5))
         ax.plot(D_loss[:epoch + 1], label="D Loss")
         ax.plot(G_loss[:epoch + 1], label="G Loss")
@@ -110,8 +111,8 @@ def train():
         plt.close(fig)
 
     if epoch % 100 == 0:
-            torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")
-            torch.save(discriminator.state_dict(), f"discriminator_ckpt_{epoch}")
+        torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")
+        torch.save(discriminator.state_dict(), f"discriminator_ckpt_{epoch}")
 
     # plot losses
     plt.figure(figsize=(10, 5))
@@ -121,7 +122,6 @@ def train():
     plt.ylabel("Loss")
     plt.legend()
     wandb.log({'loss plot': wandb.Image(plt)})
-
 
 
 def generate_samples(number_samples):
@@ -142,5 +142,6 @@ def generate_samples(number_samples):
         buf.close()
         plt.close()
 
-#train()
+
+# train()
 generate_samples(10)
