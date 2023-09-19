@@ -144,9 +144,9 @@ def train():
 def generate_samples(number_samples):
     generator.load_state_dict(torch.load(f"generator_ckpt_100"))
     for i in range(number_samples):
-        z = torch.randn(1, 200, 1, 1, 1).to(device)  # Sample random noise
+        z = torch.rand(1, 200, 1, 1, 1).to(device)  # Sample random noise
         fake_data = generator(z)
-        fake_data = (fake_data[0][0] > 0.7).detach().cpu().numpy()
+        fake_data = (fake_data[0][0] > 0.5).detach().cpu().numpy()
         ax = plt.figure().add_subplot(projection="3d")
         ax.voxels(fake_data)
 
