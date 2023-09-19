@@ -28,7 +28,7 @@ discriminator = Discriminator().to(device)
 learning_rate_G = 0.0025
 learning_rate_D = 1e-5
 batch_size = 100
-epochs = 32
+epochs = 100
 loss = nn.BCELoss()
 
 # "We use ADAM for optimization, with β = 0.5"
@@ -130,7 +130,7 @@ def train():
         )
         plt.close(fig)
 
-        if epoch % 2 == 0:
+        if epoch % 10 == 0:
             torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")
             torch.save(discriminator.state_dict(), f"discriminator_ckpt_{epoch}")
 
