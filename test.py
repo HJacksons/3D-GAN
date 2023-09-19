@@ -17,7 +17,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load the pre-trained discriminator
 discriminator = Discriminator().to(device)
 discriminator.load_state_dict(
-    torch.load("models/discriminator_ckpt_1000")
+    torch.load("models/discriminator_ckpt_100")
 )  # Update the path to your pre-trained discriminator checkpoint
 
 
