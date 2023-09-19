@@ -146,7 +146,7 @@ def generate_samples(number_samples):
     for i in range(number_samples):
         z = torch.randn(1, 200, 1, 1, 1).to(device)  # Sample random noise
         fake_data = generator(z)
-        fake_data = (fake_data[0][0] > 0.5).detach().cpu().numpy()
+        fake_data = (fake_data[0][0] > 0.2).detach().cpu().numpy()
         ax = plt.figure().add_subplot(projection="3d")
         ax.voxels(fake_data)
 
