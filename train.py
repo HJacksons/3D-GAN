@@ -98,7 +98,7 @@ def train():
                 + (fake_outputs <= 0.5).float().mean()
             ) / 2
             if accuracy < 0.8:
-                optimizer_D.step()  # Update D again if accuracy is below 0.8
+                optimizer_D.step()
 
             # print(torch.count_nonzero(fake_data[0] > 0.5).item())
 
@@ -163,5 +163,5 @@ def generate_samples(number_samples):
         plt.close()
 
 
-# train()
-generate_samples(10)
+train()
+# generate_samples(10)
