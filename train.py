@@ -163,5 +163,6 @@ def generate_samples(number_samples):
         plt.close()
 
 
-# train()
-generate_samples(10)
+train()
+
+# generate_samples(10)
