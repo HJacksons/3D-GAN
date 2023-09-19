@@ -28,7 +28,7 @@ discriminator = Discriminator().to(device)
 learning_rate_G = 0.0025
 learning_rate_D = 1e-5
 batch_size = 100
-epochs = 100
+epochs = 32
 loss = nn.BCELoss()
 
 # "We use ADAM for optimization, with β = 0.5"
@@ -66,7 +66,7 @@ def train():
             real_outputs = discriminator(real_data)
 
             # Generate fake data and forward pass for fake data
-            z = torch.randn(batch_size, 200, 1, 1, 1).to(device)  # Sample random noise
+            z = torch.rand(batch_size, 200, 1, 1, 1).to(device)  # Sample random noise
             fake_data = generator(z)
             fake_outputs = discriminator(fake_data.detach())
 
@@ -75,11 +75,11 @@ def train():
             d_loss_fake = loss(fake_outputs, fake_labels)
             d_loss = d_loss_real + d_loss_fake
             d_loss.backward()
-            optimizer_D.step()
+            # optimizer_D.step()
 
             # Generator training
             optimizer_G.zero_grad()
-            z = torch.randn(batch_size, 200, 1, 1, 1).to(device)  # Sample random noise
+            z = torch.rand(batch_size, 200, 1, 1, 1).to(device)  # Sample random noise
             fake_data = generator(z)
             fake_outputs = discriminator(fake_data)
 
@@ -87,6 +87,9 @@ def train():
             g_loss = loss(fake_outputs, real_labels)
             g_loss.backward()
             optimizer_G.step()
+
+            real_outputs = discriminator(real_data)
+            fake_outputs = discriminator(fake_data.detach())
 
             # Adaptive training strategy for the discriminator
             # Assuming accuracy is computed based on how well D discriminates real vs. fake
@@ -127,9 +130,9 @@ def train():
         )
         plt.close(fig)
 
-    if epoch % 100 == 0:
-        torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")
-        torch.save(discriminator.state_dict(), f"discriminator_ckpt_{epoch}")
+        if epoch % 2 == 0:
+            torch.save(generator.state_dict(), f"generator_ckpt_{epoch}")
+            torch.save(discriminator.state_dict(), f"discriminator_ckpt_{epoch}")
 
     # plot losses
     plt.figure(figsize=(10, 5))
