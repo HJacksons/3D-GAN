@@ -11,7 +11,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load the pre-trained discriminator
 discriminator = Discriminator().to(device)
 discriminator.load_state_dict(
-    torch.load("discriminator_ckpt_1000"))  # Update the path to your pre-trained discriminator checkpoint
+    torch.load("discriminator_ckpt_1000")
+)  # Update the path to your pre-trained discriminator checkpoint
 
 
 # Define a feature extractor that extracts features from layers 2, 3, and 4 and applies max pooling
@@ -50,8 +51,10 @@ class Classifier(nn.Module):
         super(Classifier, self).__init__()
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(7168, num_classes),  # Concatenated feature length from layers 2, 3, and 4
-            nn.Softmax(dim=1)  # Softmax for classification
+            nn.Linear(
+                7168, num_classes
+            ),  # Concatenated feature length from layers 2, 3, and 4
+            nn.Softmax(dim=1),  # Softmax for classification
         )
 
     def forward(self, features):
@@ -85,8 +88,9 @@ def train_classifier(classifier, train_loader, num_epochs):
         total_samples = 0
 
         for batch in train_loader:
-            inputs, labels = batch['voxel'].unsqueeze(1).to(device), batch['label'].to(
-                device)  # Adjust according to your dataset
+            inputs, labels = batch["voxel"].unsqueeze(1).to(device), batch["label"].to(
+                device
+            )  # Adjust according to your dataset
             optimizer_classifier.zero_grad()
 
             # Forward input through the modified feature extractor
@@ -108,7 +112,9 @@ def train_classifier(classifier, train_loader, num_epochs):
         train_loss_history.append(train_loss)
         train_accuracy_history.append(train_accuracy)
 
-        print(f"Epoch [{epoch + 1}/{num_epochs}] - Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
+        print(
+            f"Epoch [{epoch + 1}/{num_epochs}] - Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}"
+        )
 
     return train_loss_history, train_accuracy_history
 
@@ -118,7 +124,9 @@ num_epochs_classifier = 2
 
 # Replace train_loader with your actual data loader
 train_loader, _ = dataset.get_dataloaders(batch_size=2)
-train_loss_history, train_accuracy_history = train_classifier(classifier, train_loader, num_epochs_classifier)
+train_loss_history, train_accuracy_history = train_classifier(
+    classifier, train_loader, num_epochs_classifier
+)
 
 # Plot training loss and accuracy history
 plt.figure(figsize=(12, 4))

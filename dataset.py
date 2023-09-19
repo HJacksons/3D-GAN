@@ -13,10 +13,7 @@ class VoxelDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        sample = {
-            'voxel': self.data[idx],
-            'label': self.labels[idx]
-        }
+        sample = {"voxel": self.data[idx], "label": self.labels[idx]}
 
         return sample
 

@@ -4,6 +4,7 @@ import torch.optim as optim
 from tqdm import tqdm
 import dataset
 from networks import Generator, Discriminator
+
 # from torchsummary import summary
 import matplotlib.pyplot as plt
 import wandb
@@ -32,7 +33,9 @@ loss = nn.BCELoss()
 
 # "We use ADAM for optimization, with β = 0.5"
 optimizer_G = optim.Adam(generator.parameters(), lr=learning_rate_G, betas=(0.5, 0.999))
-optimizer_D = optim.Adam(discriminator.parameters(), lr=learning_rate_D, betas=(0.5, 0.999))
+optimizer_D = optim.Adam(
+    discriminator.parameters(), lr=learning_rate_D, betas=(0.5, 0.999)
+)
 
 train_loader, _ = dataset.get_dataloaders(batch_size=batch_size)
 
@@ -42,16 +45,22 @@ def train():
     D_loss = []
     G_loss = []
     for epoch in range(1, epochs + 1):
-        tqdm_batch = tqdm(train_loader, total=len(train_loader), leave=False, dynamic_ncols=True)
+        tqdm_batch = tqdm(
+            train_loader, total=len(train_loader), leave=False, dynamic_ncols=True
+        )
         for _, batch in enumerate(tqdm_batch):
-            real_data = batch['voxel']  # Batch of real 3D voxel samples
+            real_data = batch["voxel"]  # Batch of real 3D voxel samples
             real_data = real_data.unsqueeze(1).to(device)
             batch_size = real_data.size(0)
 
             # Discriminator training
             optimizer_D.zero_grad()
-            real_labels = torch.ones(batch_size, 1, 1, 1, 1, dtype=torch.float32).to(device)
-            fake_labels = torch.zeros(batch_size, 1, 1, 1, 1, dtype=torch.float32).to(device)
+            real_labels = torch.ones(batch_size, 1, 1, 1, 1, dtype=torch.float32).to(
+                device
+            )
+            fake_labels = torch.zeros(batch_size, 1, 1, 1, 1, dtype=torch.float32).to(
+                device
+            )
 
             # Forward pass for real data
             real_outputs = discriminator(real_data)
@@ -81,7 +90,10 @@ def train():
 
             # Adaptive training strategy for the discriminator
             # Assuming accuracy is computed based on how well D discriminates real vs. fake
-            accuracy = ((real_outputs > 0.5).float().mean() + (fake_outputs <= 0.5).float().mean()) / 2
+            accuracy = (
+                (real_outputs > 0.5).float().mean()
+                + (fake_outputs <= 0.5).float().mean()
+            ) / 2
             if accuracy < 0.8:
                 optimizer_D.step()  # Update D again if accuracy is below 0.8
 
@@ -92,22 +104,27 @@ def train():
 
         # Print loss and accuracy for monitoring
         tqdm_batch.set_description(
-            f"Epoch [{epoch + 1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}, D Accuracy: {accuracy.item():.4f}")
-        print(f"Epoch [{epoch + 1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}")
+            f"Epoch [{epoch + 1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}, D Accuracy: {accuracy.item():.4f}"
+        )
+        print(
+            f"Epoch [{epoch + 1}/{epochs}] - D Loss: {d_loss.item():.4f}, G Loss: {g_loss.item():.4f}"
+        )
         fig, ax = plt.subplots(figsize=(10, 5))
-        ax.plot(D_loss[:epoch + 1], label="D Loss")
-        ax.plot(G_loss[:epoch + 1], label="G Loss")
+        ax.plot(D_loss[: epoch + 1], label="D Loss")
+        ax.plot(G_loss[: epoch + 1], label="G Loss")
         ax.set_ylabel("Loss")
         ax.legend()
 
         # Log the metrics and the combined loss plot to wandb
-        wandb.log({
-            'epoch': epoch + 1,
-            'loss D': d_loss.item(),
-            'loss G': g_loss.item(),
-            'accuracy': accuracy.item(),
-            'loss plot': wandb.Image(fig)
-        })
+        wandb.log(
+            {
+                "epoch": epoch + 1,
+                "loss D": d_loss.item(),
+                "loss G": g_loss.item(),
+                "accuracy": accuracy.item(),
+                "loss plot": wandb.Image(fig),
+            }
+        )
         plt.close(fig)
 
     if epoch % 100 == 0:
@@ -121,7 +138,7 @@ def train():
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.legend()
-    wandb.log({'loss plot': wandb.Image(plt)})
+    wandb.log({"loss plot": wandb.Image(plt)})
 
 
 def generate_samples(number_samples):
@@ -130,15 +147,15 @@ def generate_samples(number_samples):
         z = torch.randn(1, 200, 1, 1, 1).to(device)  # Sample random noise
         fake_data = generator(z)
         fake_data = (fake_data[0][0] > 0.5).detach().cpu().numpy()
-        ax = plt.figure().add_subplot(projection='3d')
+        ax = plt.figure().add_subplot(projection="3d")
         ax.voxels(fake_data)
 
         buf = io.BytesIO()
-        plt.savefig(buf, format='png')
+        plt.savefig(buf, format="png")
         buf.seek(0)
         img = Image.open(buf)
 
-        wandb.log({'generated samples': wandb.Image(img)})
+        wandb.log({"generated samples": wandb.Image(img)})
         buf.close()
         plt.close()
 
