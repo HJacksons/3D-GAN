@@ -88,9 +88,6 @@ def train():
             g_loss.backward()
             optimizer_G.step()
 
-            real_outputs = discriminator(real_data)
-            fake_outputs = discriminator(fake_data.detach())
-
             # Adaptive training strategy for the discriminator
             # Assuming accuracy is computed based on how well D discriminates real vs. fake
             accuracy = (
