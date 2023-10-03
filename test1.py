@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import dataset
 from networks import Generator, Discriminator  # Import your Generator and Discriminator
-from torchsummary import summary
+
 import matplotlib.pyplot as plt
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

@@ -11,9 +11,9 @@ import wandb
 import io
 from PIL import Image
 
-wandb.login(key="796a636ca8878cd6c1494d1282f73496c43e6b31")
+wandb.login(key="")
 
-wandb.init(project="3dgan", entity="jacksonherberts")
+wandb.init(project="3dgan", entity="")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -75,7 +75,7 @@ def train():
             d_loss_fake = loss(fake_outputs, fake_labels)
             d_loss = d_loss_real + d_loss_fake
             d_loss.backward()
-            # optimizer_D.step()
+            optimizer_D.step()
 
             # Generator training
             optimizer_G.zero_grad()
@@ -142,15 +142,13 @@ def train():
 
 
 def generate_samples(number_samples):
-    generator.load_state_dict(torch.load(f"generator_ckpt_60"))
+    generator.load_state_dict(torch.load(f"generator_ckpt_100"))
     for i in range(number_samples):
-        z = torch.rand(1, 200, 1, 1, 1).to(device)  # Sample random noise
+        z = torch.randn(1, 200, 1, 1, 1).to(device)  # Sample random noise
         fake_data = generator(z)
-        fake_data = (fake_data[0][0]).detach().cpu().numpy()
-        threshold = fake_data.max() * 0.5
-        binary_fake_data = fake_data > threshold
+        fake_data = (fake_data[0][0] > 0.5).detach().cpu().numpy()
         ax = plt.figure().add_subplot(projection="3d")
-        ax.voxels(binary_fake_data)
+        ax.voxels(fake_data)
 
         buf = io.BytesIO()
         plt.savefig(buf, format="png")
@@ -164,3 +162,6 @@ def generate_samples(number_samples):
 
 # train()
 generate_samples(10)
+
+### Train a GAN per class
+# "We train a separate GAN for each class, and use the same training procedure for all classes."
