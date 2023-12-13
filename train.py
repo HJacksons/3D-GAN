@@ -5,7 +5,7 @@ from tqdm import tqdm
 import dataset
 from networks import Generator, Discriminator
 
-from torchsummary import summary
+# from torchsummary import summary
 import matplotlib.pyplot as plt
 import wandb
 import io
